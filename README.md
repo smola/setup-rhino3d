@@ -20,7 +20,7 @@ The action works on Windows runners. It is actively tested with the following [G
 See [action.yml](action.yml)
 
 ```yaml
-- uses: smola/setup-rhino3d@main
+- uses: smola/setup-rhino3d@v1
   with:
     # Whether to cache the Rhino install. Defaults to 'true'.
     cache: "true"
@@ -43,7 +43,7 @@ See [action.yml](action.yml)
 ```
 steps:
 - uses: actions/checkout@v4
-- uses: smola/setup-rhino3d@main
+- uses: smola/setup-rhino3d@v1
   with:
     rhino-version: '8'
 # Now you can use Rhino 8.
