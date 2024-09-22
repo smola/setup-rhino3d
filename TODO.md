@@ -1,0 +1,4 @@
+- Add installer-url parameter, e.g. https://files.mcneel.com/dujour/exe/20200825/rhino_en-us_6.29.20238.11501.exe
+- Add cache-installer: true
+- Add cache-install: true
+- Add extra installer parameters, e.g. to pass INSTALL_EN=1, or SEND_STATISTICS=0

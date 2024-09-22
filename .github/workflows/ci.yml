@@ -1,0 +1,123 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  check-format:
+    name: "Check format"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - run: npx -- prettier . --check
+  test-install-with-cache-save:
+    strategy:
+      matrix:
+        os: ["windows-2022", "windows-2019"]
+        version: ["6", "7", "8", "wip"]
+    name: "Test Rhino ${{ matrix.version }} on ${{ matrix.os }} (cache save)"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: ./
+        with:
+          rhino-version: "${{ matrix.version }}"
+          cache: "save-only"
+        timeout-minutes: 4
+      - name: "Prepare SimpleRhinoTests"
+        if: matrix.version == '8'
+        run: |
+          git clone --depth 1 https://github.com/mcneel/SimpleRhinoTests.git
+          cd SimpleRhinoTests
+          dotnet restore
+          dotnet build --no-restore
+        shell: cmd
+      - name: "Run SimpleRhinoTests"
+        if: matrix.version == '8'
+        run: |
+          cd SimpleRhinoTests
+          dotnet test --no-build --verbosity normal --framework "net7.0-windows"
+        shell: cmd
+        env:
+          RHINO_TOKEN: ${{ secrets.RHINO_TOKEN }}
+        timeout-minutes: 3
+  test-install-with-cache:
+    needs: test-install-with-cache-save
+    strategy:
+      matrix:
+        os: ["windows-2022", "windows-2019"]
+        version: ["6", "7", "8", "wip"]
+    name: "Test Rhino ${{ matrix.version }} on ${{ matrix.os }} (cache)"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: ./
+        with:
+          rhino-version: "${{ matrix.version }}"
+          cache: "true"
+        timeout-minutes: 1
+      - name: "Prepare SimpleRhinoTests"
+        if: matrix.version == '8'
+        run: |
+          git clone --depth 1 https://github.com/mcneel/SimpleRhinoTests.git
+          cd SimpleRhinoTests
+          dotnet restore
+          dotnet build --no-restore
+        shell: cmd
+      - name: "Run SimpleRhinoTests"
+        if: matrix.version == '8'
+        run: |
+          cd SimpleRhinoTests
+          dotnet test --no-build --verbosity normal --framework "net7.0-windows"
+        shell: cmd
+        env:
+          RHINO_TOKEN: ${{ secrets.RHINO_TOKEN }}
+        timeout-minutes: 3
+  test-install-without-cache:
+    strategy:
+      matrix:
+        os: ["windows-2022", "windows-2019"]
+        version: ["6", "7", "8", "wip"]
+    name: "Test Rhino ${{ matrix.version }} on ${{ matrix.os }} (no cache)"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: ./
+        with:
+          rhino-version: "${{ matrix.version }}"
+          cache: "false"
+        timeout-minutes: 4
+      - name: "Prepare SimpleRhinoTests"
+        if: matrix.version == '8'
+        run: |
+          git clone --depth 1 https://github.com/mcneel/SimpleRhinoTests.git
+          cd SimpleRhinoTests
+          dotnet restore
+          dotnet build --no-restore
+        shell: cmd
+      - name: "Run SimpleRhinoTests"
+        if: matrix.version == '8'
+        run: |
+          cd SimpleRhinoTests
+          dotnet test --no-build --verbosity normal --framework "net7.0-windows"
+        shell: cmd
+        env:
+          RHINO_TOKEN: ${{ secrets.RHINO_TOKEN }}
+        timeout-minutes: 3
+  test-install-with-pinning:
+    name: "Test Rhino 6 on windows-2022 (pinning)"
+    runs-on: "windows-2022"
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: ./
+        with:
+          rhino-version: "6.35.21222.17001"
+          rhino-version-date: "20210810"
+          cache: "false"
+        timeout-minutes: 4

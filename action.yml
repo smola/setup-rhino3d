@@ -1,0 +1,29 @@
+name: "Setup Rhino 3D"
+description: "Setup Rhino 3D"
+inputs:
+  email:
+    description: "Email address to use for Rhino 3D installer download"
+    default: ""
+  rhino-version:
+    description: "Rhino version to install"
+    default: "8"
+  rhino-version-date:
+    description: "Rhino version date to install, required for version pinning"
+    default: ""
+  cache:
+    description: "Whether to cache the Rhino install or not"
+    default: "true"
+outputs:
+  installer-url:
+    description: "URL to download Rhino 3D installer"
+  installer-filename:
+    description: "Filename of Rhino 3D installer"
+  exact-version:
+    description: "Exact version of Rhino 3D"
+  exact-version-date:
+    description: "Exact version date of Rhino 3D"
+  rhino-home:
+    description: "Path to Rhino installation"
+runs:
+  using: "node20"
+  main: "index.js"

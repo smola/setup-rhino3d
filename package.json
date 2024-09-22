@@ -1,0 +1,14 @@
+{
+  "name": "setup-rhino3d",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Santiago M. Mola",
+  "license": "MIT",
+  "description": "(Unofficial) GitHub Action to setup Rhino 3D",
+  "dependencies": {
+    "@actions/cache": "^3.2.4",
+    "@actions/core": "^1.10.1"
+  }
+}
