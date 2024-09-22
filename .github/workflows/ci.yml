@@ -123,3 +123,15 @@ jobs:
           rhino-version-date: "20210810"
           cache: "false"
         timeout-minutes: 4
+  required:
+    name: "Required checks"
+    needs:
+      - check-format
+      - test-install-with-cache-save
+      - test-install-with-cache
+      - test-install-without-cache
+      - test-install-with-pinning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Done
+        run: echo Done
