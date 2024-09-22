@@ -2,9 +2,11 @@ on:
   push:
     branches:
       - main
+      - v*
   pull_request:
     branches:
       - main
+      - v*
 jobs:
   check-format:
     name: "Check format"
