@@ -90,10 +90,19 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - uses: ./
+        id: install
         with:
           rhino-version: "${{ matrix.version }}"
           cache: "false"
         timeout-minutes: 4
+      - name: "Check rhino-home"
+        run: |
+          RHINO_HOME="${{ steps.install.outputs.rhino-home }}"
+          echo "RHINO_HOME: $RHINO_HOME"
+          test -d "$RHINO_HOME"
+          test -f "$RHINO_HOME/System/Rhino.exe"
+          ls "$RHINO_HOME"
+        shell: bash
       - name: "Prepare SimpleRhinoTests"
         if: matrix.version == '8'
         run: |
